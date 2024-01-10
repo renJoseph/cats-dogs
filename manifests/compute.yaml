@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cats-and-dogs
+  labels:
+    app: cats-and-dogs
+spec:
+  selector:
+    matchLabels:
+      app: cats-and-dogs
+  template:
+    metadata:
+      labels:
+        app: cats-and-dogs
+    spec:
+      volumes:
+      - name: cats-and-dogs-volume-2
+        persistentVolumeClaim:
+          claimName: cats-and-dogs-pv-claim-2
+      containers:
+      - name: cats-and-dogs
+        image: cats-and-dogs
+        imagePullPolicy: Never
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            port: 80
+            path: /health
+          periodSeconds: 10
+          initialDelaySeconds: 120
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: "/var/lib/cats-dogs"
+          name: cats-and-dogs-volume-2
